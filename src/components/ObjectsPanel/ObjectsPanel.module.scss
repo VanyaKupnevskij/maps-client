@@ -1,0 +1,71 @@
+.root {
+  position: relative;
+  right: 0;
+  top: 0;
+  display: flex;
+  width: 300px;
+  height: 50vh;
+  margin: 0.3rem;
+  background-color: rgb(164, 208, 244);
+  border-radius: 10px;
+}
+
+.tab_controls {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: fit-content;
+}
+
+.tab_title {
+  flex: 1;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  color: rgb(52, 41, 135);
+  border-radius: 10px 10px 0 0;
+  text-align: center;
+  cursor: pointer;
+
+  transition: all 0.3s;
+
+  &:hover,
+  &__active {
+    background-color: rgb(234, 234, 255);
+  }
+}
+
+.tab_roads,
+.tab_buildings,
+.tab_adresses {
+  position: absolute;
+  right: 0;
+  top: 2rem;
+  width: 100%;
+  height: calc(100% - 2rem);
+  background-color: rgb(234, 234, 255);
+  border-radius: 0 0 10px 10px;
+}
+
+.tab_content {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 1rem;
+
+  li {
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    list-style: none;
+    cursor: pointer;
+    
+    transition: all 0.3s;
+  }
+  li:nth-child(even) {
+    background-color: rgb(228, 225, 251);
+  }
+  li:hover {
+    background-color: rgb(217, 213, 251);
+  }
+}
