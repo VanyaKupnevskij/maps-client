@@ -8,15 +8,21 @@ function PropsPanel() {
   const selectedRoadId = useSelector((state) => state.roads.selectedId);
   const selectedRoad = roads.find((road) => road.id === selectedRoadId);
   const [tempNameRoad, setTempNameRoad] = useState('');
+  const [tempRateRoad, setTempRateRoad] = useState('level7');
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     setTempNameRoad(selectedRoad?.name);
-  }, [selectedRoad?.name])
+    setTempRateRoad(selectedRoad?.rate);
+  }, [selectedRoad?.name, selectedRoad?.rate])
   
   function handleChangeName(newName) {
     setTempNameRoad(newName);
+  }
+  
+  function handleChangeRate(newRate) {
+    setTempRateRoad(newRate);
   }
   
   function handleDeleteRoad() {
@@ -24,7 +30,11 @@ function PropsPanel() {
   }
   
   function handleSaveRoad() {
-    dispatch(updateSelectedRoad({...selectedRoad, name: tempNameRoad}));
+    dispatch(updateSelectedRoad(
+      {...selectedRoad, 
+        name: tempNameRoad, 
+        rate: tempRateRoad
+      }));
   }
     
   return (
@@ -38,12 +48,29 @@ function PropsPanel() {
             <span className={styles.prop_data}>{selectedRoadId}</span>
           </div>
           <div className={styles.prop}>
-          <h4 className={styles.prop_title}>Name</h4> 
-          <input 
-            className={styles.prop_input} 
-            type="text" 
-            value={tempNameRoad} 
-            onChange={(e) => handleChangeName(e.target.value)}/>
+            <h4 className={styles.prop_title}>Name</h4> 
+            <input 
+              className={styles.prop_input} 
+              name="name"
+              type="text" 
+              value={tempNameRoad} 
+              onChange={(e) => handleChangeName(e.target.value)}/>
+          </div>
+          <div className={styles.prop}>
+            <h4 className={styles.prop_title}>Rate</h4> 
+            <select 
+              className={styles.prop_select}
+              name="rate" 
+              value={tempRateRoad} 
+              onChange={(e) => handleChangeRate(e.target.value)}>
+                <option value="level1">Level 1</option>
+                <option value="level2">Level 2</option>
+                <option value="level3">Level 3</option>
+                <option value="level4">Level 4</option>
+                <option value="level5">Level 5</option>
+                <option value="level6">Level 6</option>
+                <option value="level7">Level 7</option>
+            </select>
           </div>
 
           <div className={styles.buttons}>

@@ -2,11 +2,22 @@ import { useState, useEffect, useRef } from 'react';
 import styles from './App.module.scss';
 import ObjectsPanel from './components/ObjectsPanel/ObjectsPanel';
 import { useSelector, useDispatch } from 'react-redux';
-import { addRoad } from './slices/roadsSlice'
+import { addRoad, selectRoad } from './slices/roadsSlice'
 import PropsPanel from './components/PropsPanel/PropsPanel';
+
+const stylesRoad = {
+  'level1': { color: "orange", thinkness: 7 },
+  'level2': { color: "orange", thinkness: 6 },
+  'level3': { color: "orange", thinkness: 5 },
+  'level4': { color: "gray", thinkness: 4 },
+  'level5': { color: "gray", thinkness: 3 },
+  'level6': { color: "#aaa", thinkness: 2 },
+  'level7': { color: "#aaa", thinkness: 1 },
+}
 
 function App() {
   const roads = useSelector((state) => state.roads.items);
+  const selectedRoadId = useSelector((state) => state.roads.selectedId);
   const [points, setPoints] = useState([]);
   const refCanvas = useRef();  
   const refParentCanvas = useRef();  
@@ -54,33 +65,40 @@ function App() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     for (const road of roads) {
-      drawRoad(road, ctx);
+      drawRoad(road, ctx, road.id === selectedRoadId);
     }
 
     drawRoad(
       { 
-        points: [...points, { x: currentPoint.x, y: currentPoint.y }] 
+        points: [...points, { x: currentPoint.x, y: currentPoint.y }],
+        rate: 'level7'
       },
       ctx);
   }
   
-  function drawRoad(road, ctx) {
+  function drawRoad(road, ctx, isSelected = false) {
     ctx.beginPath();
     for (const point of road.points) {
       ctx.lineTo(point.x, point.y);
     }
-    ctx.strokeStyle = "gray";
-    ctx.lineWidth = 4;
+    
+    if (isSelected) {
+      ctx.strokeStyle = 'green';
+      ctx.lineWidth = stylesRoad[road.rate].thinkness + 1;
+    } else {
+      ctx.strokeStyle = stylesRoad[road.rate].color;
+      ctx.lineWidth = stylesRoad[road.rate].thinkness;
+    }
+
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.stroke();
-    ctx.closePath();
     
   }
 
   useEffect(() => {
     drawAllRoads(refCanvas.current, points)
-  }, [points, currentPoint, roads]);
+  }, [points, currentPoint, roads, selectedRoadId]);
 
   return (
     <div className={styles.App}>

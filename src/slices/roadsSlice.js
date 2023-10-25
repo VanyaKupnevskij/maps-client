@@ -15,6 +15,7 @@ export const roadsSlice = createSlice({
         id: state.lastId, 
         name: `#${state.lastId} road`,
         points: action.payload,
+        rate: 'level7'
       }
       state.items.push(newRoad);
       state.lastId++;
