@@ -1,16 +1,23 @@
 import { useState } from 'react';
 import styles from './ObjectsPanel.module.scss';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectRoad } from '../../slices/roadsSlice'
 
 function ObjectsPanel() {
   const roads = useSelector((state) => state.roads.items);
-  // const [roads, setRoads] = useState([{id:1, name:'#1 road'}]);
+  const selectedRoadId = useSelector((state) => state.roads.selectedId);
   const [buildings, setBuildings] = useState([]);
   const [adresses, setAdresses] = useState([]);
+
   const [currentTab, setCurrentTab] = useState('roads');
+  const dispatch = useDispatch();
   
   function handleTabChange(newState) {
     setCurrentTab(newState);
+  }
+
+  function handleSelectRoad(id) {
+    dispatch(selectRoad(id));
   }
 
   return (
@@ -29,13 +36,18 @@ function ObjectsPanel() {
           adresses
         </h3>
       </nav>
-
       {
         currentTab === 'roads' &&
           <div className={styles.tab_roads}>
             <ul className={styles.tab_content}>
               {
-                roads.map(road => <li key={road.id}>{road.name}</li>)
+                roads.map(road => 
+                <li key={road.id}
+                    onClick={() => handleSelectRoad(road.id)}
+                    className={styles.list_item + (
+                      selectedRoadId === road.id ? " " + styles.list_item__selected : "")}>
+                  {road.name}
+                </li>)
               }
             </ul>
           </div>
@@ -45,9 +57,9 @@ function ObjectsPanel() {
         currentTab === 'buildings' &&
           <div className={styles.tab_buildings}>
             <ul className={styles.tab_content}>
-              <li>#1 house</li>
-              <li>#2 house</li>
-              <li>#3 house</li>
+              <li className={styles.list_item}>#1 house</li>
+              <li className={styles.list_item}>#2 house</li>
+              <li className={styles.list_item}>#3 house</li>
             </ul>
           </div>
       }
@@ -56,9 +68,9 @@ function ObjectsPanel() {
         currentTab === 'adresses' &&
           <div className={styles.tab_adresses}>
             <ul className={styles.tab_content}>
-              <li>#1 adress</li>
-              <li>#2 adress</li>
-              <li>#3 adress</li>
+              <li className={styles.list_item}>#1 adress</li>
+              <li className={styles.list_item}>#2 adress</li>
+              <li className={styles.list_item}>#3 adress</li>
             </ul>
           </div>
       }

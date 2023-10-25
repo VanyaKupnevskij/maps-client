@@ -4,7 +4,7 @@
   top: 0;
   display: flex;
   width: 300px;
-  height: 50vh;
+  flex: 1;
   margin: 0.3rem;
   background-color: rgb(164, 208, 244);
   border-radius: 10px;
@@ -50,22 +50,27 @@
   display: flex;
   flex-direction: column;
   overflow: auto;
-  gap: 0.3rem;
   margin: 0;
   padding: 1rem;
 
-  li {
+  .list_item {
     padding: 0.5rem 1rem;
     border-radius: 10px;
+    border: 2px solid transparent;
     list-style: none;
     cursor: pointer;
-    
+
     transition: all 0.3s;
-  }
-  li:nth-child(even) {
-    background-color: rgb(228, 225, 251);
-  }
-  li:hover {
-    background-color: rgb(217, 213, 251);
+
+    &:nth-child(even) {
+      background-color: rgb(228, 225, 251);
+    }
+    &:hover {
+      background-color: rgb(217, 213, 251);
+    }
+    &__selected {
+      background-color: rgb(217, 213, 251);
+      border: 2px solid rgb(197, 191, 247);
+    }
   }
 }

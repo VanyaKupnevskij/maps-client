@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   items: [],
-  lastId: 0
+  lastId: 0,
+  selectedId: null
 }
 
 export const roadsSlice = createSlice({
@@ -18,14 +19,21 @@ export const roadsSlice = createSlice({
       state.items.push(newRoad);
       state.lastId++;
     },
-    deleteRoad: (state, action) => {
-      // const roadToDelete = state.items.find((road) => road.id === action.payload);
-      state.items.splice(action.payload, 1);
+    deleteSelectedRoad: (state) => {
+      const roadToDelete = state.items.findIndex((road) => road.id === state.selectedId);
+      state.items.splice(roadToDelete, 1);
     },
+    selectRoad: (state, action) => {
+      state.selectedId = action.payload;
+    },
+    updateSelectedRoad: (state, action) => {
+      const indexRoad = state.items.findIndex((road) => road.id === state.selectedId);
+      state.items.splice(indexRoad, 1);
+      state.items.push(action.payload);
+    }
   },
 })
 
-// Action creators are generated for each case reducer function
-export const { addRoad, deleteRoad } = roadsSlice.actions;
+export const { addRoad, deleteSelectedRoad, selectRoad, updateSelectedRoad } = roadsSlice.actions;
 
 export default roadsSlice.reducer;

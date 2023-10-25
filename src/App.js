@@ -1,10 +1,9 @@
-import { useState } from 'react';
-import './App.css';
-import { useEffect } from 'react';
-import { useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import styles from './App.module.scss';
 import ObjectsPanel from './components/ObjectsPanel/ObjectsPanel';
 import { useSelector, useDispatch } from 'react-redux';
 import { addRoad } from './slices/roadsSlice'
+import PropsPanel from './components/PropsPanel/PropsPanel';
 
 function App() {
   const roads = useSelector((state) => state.roads.items);
@@ -27,7 +26,10 @@ function App() {
       setDrawing(true);
       setCurrentPoint({ x: clientX, y: clientY });
     } else {
-      dispatch(addRoad(points))
+      if (points.length > 1) {
+        dispatch(addRoad(points));
+      }
+
       setPoints([]);
       setDrawing(false);
       setCurrentPoint({ x: 0, y: 0 });
@@ -78,18 +80,21 @@ function App() {
 
   useEffect(() => {
     drawAllRoads(refCanvas.current, points)
-  }, [points, currentPoint]);
+  }, [points, currentPoint, roads]);
 
   return (
-    <div className='App'>
-      <div className='map' ref={refParentCanvas}>
+    <div className={styles.App}>
+      <div className={styles.map} ref={refParentCanvas}>
         <canvas
           ref={refCanvas}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
         />
       </div>
+      <div className={styles.aside_panel}>
+        <PropsPanel/>
         <ObjectsPanel/>
+      </div>
     </div>
   );
 }
