@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import ObjectsPanel from './components/ObjectsPanel/ObjectsPanel';
 
 function App() {
-  const [data, setData] = useState(roads);
+  const [data, setData] = useState([]);
   const [points, setPoints] = useState([]);
   const refCanvas = useRef();  
   const refParentCanvas = useRef();  
