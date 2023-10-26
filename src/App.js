@@ -14,14 +14,14 @@ const stylesRoad = {
   'level6': { color: "#aaa", thinkness: 2 },
   'level7': { color: "#aaa", thinkness: 1 },
 }
+let points = [];
+let currentPoint = {x: 0, y: 0};
 
 function App() {
   const roads = useSelector((state) => state.roads.items);
   const selectedRoadId = useSelector((state) => state.roads.selectedId);
-  const [points, setPoints] = useState([]);
   const refCanvas = useRef();  
   const refParentCanvas = useRef();  
-  const [currentPoint, setCurrentPoint] = useState({x: 0, y: 0});
   const [drawing, setDrawing] = useState(false); 
   const dispatch = useDispatch();
 
@@ -33,25 +33,29 @@ function App() {
   const handleMouseDown = (e) => {
     if (e.button === 0) {
       const { clientX, clientY } = e.nativeEvent;
-      setPoints((prevPoints) => [...prevPoints, { x: clientX, y: clientY }]);
+      points.push({ x: clientX, y: clientY });
       setDrawing(true);
-      setCurrentPoint({ x: clientX, y: clientY });
+      currentPoint = { x: clientX, y: clientY };
     } else {
       if (points.length > 1) {
         dispatch(addRoad(points));
       }
 
-      setPoints([]);
+      points = [];
       setDrawing(false);
-      setCurrentPoint({ x: 0, y: 0 });
+      currentPoint = { x: 0, y: 0 };
     }
-  };
 
+    drawAllRoads(refCanvas.current, points);
+  };
+  
   const handleMouseMove = (e) => {
     const { clientX, clientY } = e.nativeEvent;
-
+    
     if (drawing) {
-      setCurrentPoint({ x: clientX, y: clientY });
+      currentPoint = { x: clientX, y: clientY };
+      
+      drawAllRoads(refCanvas.current, points);
     }
   };
 
@@ -93,12 +97,11 @@ function App() {
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.stroke();
-    
   }
 
   useEffect(() => {
-    drawAllRoads(refCanvas.current, points)
-  }, [points, currentPoint, roads, selectedRoadId]);
+    drawAllRoads(refCanvas.current, points);
+  }, [roads, selectedRoadId]);
 
   return (
     <div className={styles.App}>
