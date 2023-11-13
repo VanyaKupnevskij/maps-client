@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import styles from './App.module.scss';
 import ObjectsPanel from './components/ObjectsPanel/ObjectsPanel';
 import { useSelector, useDispatch } from 'react-redux';
-import { addRoad, selectRoad } from './slices/roadsSlice'
+import { addRoad, treePoints } from './slices/roadsSlice'
 import PropsPanel from './components/PropsPanel/PropsPanel';
 
 const stylesRoad = {
@@ -16,6 +16,7 @@ const stylesRoad = {
 }
 let points = [];
 let currentPoint = {x: 0, y: 0};
+let nearestPoints = [null, null];
 
 function App() {
   const roads = useSelector((state) => state.roads.items);
@@ -31,19 +32,35 @@ function App() {
   }
 
   const handleMouseDown = (e) => {
-    if (e.button === 0) {
+    if (e.button === 0 && e.ctrlKey) {
       const { clientX, clientY } = e.nativeEvent;
-      points.push({ x: clientX, y: clientY });
-      setDrawing(true);
-      currentPoint = { x: clientX, y: clientY };
-    } else {
-      if (points.length > 1) {
-        dispatch(addRoad(points));
-      }
+      const nearest = treePoints.nearest({ x: clientX, y: clientY }, 2, 800);
 
-      points = [];
-      setDrawing(false);
-      currentPoint = { x: 0, y: 0 };
+      if (nearest[0]) {
+        nearestPoints[0] = nearest[0][0];
+      } else {
+        nearestPoints[0] = null;
+      }
+      if (nearest[1]) {
+        nearestPoints[1] = nearest[1][0];
+      } else {
+        nearestPoints[1] = null;
+      }
+    } else {
+      if (e.button === 0) {
+        const { clientX, clientY } = e.nativeEvent;
+        points.push({ x: clientX, y: clientY });
+        setDrawing(true);
+        currentPoint = { x: clientX, y: clientY };
+      } else {
+        if (points.length > 1) {
+          dispatch(addRoad(points));
+        }
+
+        points = [];
+        setDrawing(false);
+        currentPoint = { x: 0, y: 0 };
+      }
     }
 
     drawAllRoads(refCanvas.current, points);
@@ -97,6 +114,12 @@ function App() {
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(nearestPoints[0]?.x, nearestPoints[0]?.y, 5, 0, 2 * Math.PI);
+    ctx.arc(nearestPoints[1]?.x, nearestPoints[1]?.y, 5, 0, 2 * Math.PI);
+    ctx.fillStyle = nearestPoints[0] && nearestPoints[1] ? "blue" : "red";
+    ctx.fill();
   }
 
   useEffect(() => {

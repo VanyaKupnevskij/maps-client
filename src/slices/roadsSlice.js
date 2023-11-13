@@ -1,9 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { kdTree } from 'kd-tree-javascript';
+
+function distance(a, b) {
+  return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2);
+}
+
+export var treePoints = new kdTree([], distance, ["x", "y"]);
 
 const initialState = {
   items: [],
   lastId: 0,
-  selectedId: null
+  selectedId: null,
 }
 
 export const roadsSlice = createSlice({
@@ -19,6 +26,10 @@ export const roadsSlice = createSlice({
       }
       state.items.push(newRoad);
       state.lastId++;
+
+      for (let point of newRoad.points) {
+        treePoints.insert(point);
+      }
     },
     deleteSelectedRoad: (state) => {
       const roadToDelete = state.items.findIndex((road) => road.id === state.selectedId);
